@@ -18,10 +18,12 @@
 #include <iostream>
 #include <math.h>
 #include <iomanip>
+#include <string>
+#include <cctype>
 
 using namespace std;
 
-void funcSelection(char &);
+char funcSelection(char);
 void funcHoursInandOut(int &, int &, int &, int &, int &, int&);
 
 int main()
