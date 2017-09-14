@@ -22,8 +22,7 @@
 using namespace std;
 
 void funcSelection(char &);
-void funcHoursIn(int &, int &);
-void funcHoursOut(int &, int &);
+void funcHoursInandOut(int &, int &, int &, int &, int &, int&);
 
 int main()
 {
