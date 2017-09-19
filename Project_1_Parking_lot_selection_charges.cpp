@@ -24,14 +24,14 @@
 using namespace std;
 
 //input
-char funcSelection(char & a, string & b);
+char funcSelection(char a, string & b, char s);
 
 //process
 void funcHoursInandOut(int &, int &, int &, int &, int &, int &, int &, int &);
-float setRate(const float & a, const float & b);
+float setRate(int a, char b, char & c, float & d, float & e);
 
 //output
-void print();
+//void print();
 /*
 class car
 {
@@ -73,14 +73,15 @@ class Bus
 
 int main()
 {
-	char select;	
+	char select, sizef;	
 	string vehicleType;
 	int hourIn, minuteIn, hourOut, minuteOut, hourDifference,
 		 minuteDifference, estimatedHour, estimatedMinute;
 	float totalRate, firstRate, secondRate;
 
-funcSelection(select, vehicleType);
+funcSelection(select, vehicleType, sizef);
 funcHoursInandOut(hourIn, minuteIn, hourOut, minuteOut, hourDifference, minuteDifference,estimatedHour,estimatedMinute);
+setRate(hourDifference, select, sizef, firstRate, secondRate);
 /*totalRate = setRate(firstRate, secondRate);
 print();*/
 return 0;	
@@ -92,7 +93,7 @@ on the size of the truck. However, the program will only accept characters that 
 and if the user is being asked about their truck's size, characters 'S' and 'L' are only accepted.
 Once the selection is fully confirmed, it will return the character value 'select' later on.
 */
-char funcSelection(char & select, string & vehicleType)
+char funcSelection(char select, string & vehicleType, char sizef)
 {
 char input;	
 cout << "Welcome to the Passaic County Parking Authority.\n\nPlease select the vehicle that you have parked here by entering the corresponding letter for your selection.";
@@ -103,7 +104,7 @@ select= toupper(input);
 while ((select!='C') && (select!='V') && (select!='S') && (select!='B') && (select!='T'))
 {
 cout << "Invalid input; Please try entering the information once more." << endl;
-funcSelection(select, vehicleType);
+funcSelection(select, vehicleType, sizef);
 }
 
 switch(select)
@@ -206,45 +207,74 @@ cout << "Time Elapsed: " << hourDifference << " hours and " << minuteDifference 
 	
 }
 
-float setRate(int hourDifference, string vehicleType, const float & firstRate, const float & secondRate)
+float setRate(int hourDifference, char select, char & sizef, float & firstRate, float & secondRate)
 {
 	
 switch (select)
 {
-case "Car":
-case "SUV":
-case "Van":	
+case 'C':
+case 'S':
+case 'V':	
 {
 firstRate= 0.00;
 secondRate= 1.50;	 	 
 break;
 } 	
 
-case "Bus":
-case "Small Truck":	
+case 'B':	
 {
 firstRate= 1.00;
 secondRate=2.50; 
 break;	
 }
 
-case "Large Truck":
+case 'T':
 {
-firstRate= 2.00;
-secondRate=3.50;
-break;		
-}
+	switch (sizef)
+		{
+		
+		case 'L':
+		
+		firstRate = 2.00;
+		secondRate = 3.50;
+		break;
+		case 'S':	
 	
+		firstRate = 1.00;
+		secondRate = 2.50;
+		break;}
+		/*{
+	switch (sizef)
+{
+case 'S':
+{
+firstRate= 1.00;
+secondRate=2.50;
+break;
+}	
+case 'L':
+{firstRate= 2.00;
+secondRate-3.50;
+break;
+}	
+}	
+
+}*/
+
 }
+
+	
+cout << firstRate << endl;
+cout << secondRate << endl;
 
 //second rate calculation
 	
-if (hourDifference > 3)
+/*if (hourDifference > 3)
 {
 newDifference = hourDifference-3
 finalRate=	
 	
+}*/
+return firstRate;
 }
-	
-	
 }
