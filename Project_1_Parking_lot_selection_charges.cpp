@@ -50,7 +50,6 @@ class car
         void setrate();
         void print() const;
 };
-
 class Bus
 {
     private:
@@ -207,3 +206,45 @@ cout << "Time Elapsed: " << hourDifference << " hours and " << minuteDifference 
 	
 }
 
+float setRate(int hourDifference, string vehicleType, const float & firstRate, const float & secondRate)
+{
+	
+switch (select)
+{
+case "Car":
+case "SUV":
+case "Van":	
+{
+firstRate= 0.00;
+secondRate= 1.50;	 	 
+break;
+} 	
+
+case "Bus":
+case "Small Truck":	
+{
+firstRate= 1.00;
+secondRate=2.50; 
+break;	
+}
+
+case "Large Truck":
+{
+firstRate= 2.00;
+secondRate=3.50;
+break;		
+}
+	
+}
+
+//second rate calculation
+	
+if (hourDifference > 3)
+{
+newDifference = hourDifference-3
+finalRate=	
+	
+}
+	
+	
+}
