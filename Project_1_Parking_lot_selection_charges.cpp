@@ -249,7 +249,7 @@ if (hourDifference <=2)
 	}
 	else
 	{
-	float totalRate= (firstRate+(secondRate * (estimatedHour-3)));
+	float totalRate= (firstRate+(secondRate * (estimatedHour-2)));
 	return totalRate;
 	cout << "/n" << totalRate << endl;
 }
@@ -264,7 +264,7 @@ if (hourDifference <=1)
 	}
 	else
 	{
-	float totalRate= (firstRate + (secondRate * (estimatedHour-3)));
+	float totalRate= (firstRate + (secondRate * (estimatedHour-1)));
 	return totalRate;
 	cout << "/n" << totalRate << endl;
 }
