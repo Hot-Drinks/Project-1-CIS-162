@@ -24,52 +24,15 @@
 using namespace std;
 
 //input
-char funcSelection(char a, string & b, char s);
+string funcSelection(char a, string & b, char s);
 
 //process
 void funcHoursInandOut(int &, int &, int &, int &, int &, int &, int &, int &);
-float setRate(int a, char b, char & c, float & d, float & e);
+float getRate(string vehicleType, int & hourDifference, int & estimatedHour,int & estimatedMinute, float & firstRate, float & secondRate);
 
 //output
-//void print();
-/*
-class car
-{
-    private:
-        char select;
-        int hourin, minutein, hourout, minuteout, hourDifference,
-				 minuteDifference, estimatedHour, estimatedMinute;
-        
-        const float getfirstrate();
-        const float getsecondrate();
-        
-        
-    public:
-        ~car(){}
-        car();
-        void setrate();
-        void print() const;
-};
-class Bus
-{
-    private:
-        char select;
-        int hourin, minutein, hourout, minuteout, hourDifference,
-				 minuteDifference, estimatedHour, estimatedMinute;
-        
-        const float getfirstrate();
-        const float getsecondrate();
-        
-        
-    public:
-        ~bus(){}
-        bus();
-        void setrate();
-        void print() const;
-};
-*/
-
-
+void print(string vehicleType, int hourIn, int minuteIn, int hourOut, int minuteOut, int & estimatedHour, 
+int & hourDifference, int & minuteDifference, float & firstRate, float & secondRate, float totalRate);
 
 int main()
 {
@@ -81,19 +44,29 @@ int main()
 
 funcSelection(select, vehicleType, sizef);
 funcHoursInandOut(hourIn, minuteIn, hourOut, minuteOut, hourDifference, minuteDifference,estimatedHour,estimatedMinute);
-setRate(hourDifference, select, sizef, firstRate, secondRate);
-/*totalRate = setRate(firstRate, secondRate);
-print();*/
+totalRate = getRate(vehicleType, hourDifference, estimatedHour, estimatedMinute, firstRate, secondRate);
+if ((select='C') || (select='V') || (select='S'))
+{
+print(vehicleType, hourIn, minuteIn, hourOut, minuteOut, estimatedHour, 
+	hourDifference, minuteDifference, firstRate, secondRate, totalRate);
+}
+	else
+	{ 
+	if ((select='B') || (select='T') && (sizef='S'))
+	{
+	print(vehicleType, hourIn, minuteIn, hourOut, minuteOut, estimatedHour, 
+	hourDifference, minuteDifference, firstRate, secondRate, totalRate);
+	}
+	}
 return 0;	
 }
-
 /*This function will allow the user to enter a selection for their vehicle type through a menu.
 In addition, if 'Truck' is selected in menu, the program will ask an additional question to clarify 
 on the size of the truck. However, the program will only accept characters that are 'C','V','S','B', or 'T'
 and if the user is being asked about their truck's size, characters 'S' and 'L' are only accepted.
 Once the selection is fully confirmed, it will return the character value 'select' later on.
 */
-char funcSelection(char select, string & vehicleType, char sizef)
+string funcSelection(char select, string & vehicleType, char sizef)
 {
 char input;	
 cout << "Welcome to the Passaic County Parking Authority.\n\nPlease select the vehicle that you have parked here by entering the corresponding letter for your selection.";
@@ -156,7 +129,7 @@ sizef= toupper(size);
 }
 cout << "You entered: " << select << endl;
 cout << "Vehicle: " << vehicleType << endl;
-return select;
+return vehicleType;
 }
 
 /*
@@ -166,11 +139,12 @@ return select;
  The function will not accept characters, irrational numbers, or values between 0 and 6 and over 24.
  The variables in this function will be passed by reference later for our output. 
 */
-void funcHoursInandOut(int & hourIn, int & minuteIn, int & hourOut, int & minuteOut, int & hourDifference, int & minuteDifference, int & estimatedHour, int & estimatedMinute)
+void funcHoursInandOut(int & hourIn, int & minuteIn, int & hourOut, int & minuteOut, int & hourDifference, int & minuteDifference, 
+int & estimatedHour, int & estimatedMinute)
 {
-cout << "\nPlease enter your time of arrival, beginning with the hour value (06-24) and then minutes (0-59)" << endl;
+cout << "\nPlease enter your time of arrival, beginning with the hour value (06-24) and then minutes (00-59)" << endl;
 cout << "Hour of Arrival : "; cin >> hourIn;
-	while ((hourIn > 0) && (hourIn < 6) && (hourIn > 24))
+	while ((hourIn < 6) && (hourIn > 24))
 	{cout << "Invalid values. Please enter the values again.";
 	cout << "Hour of Arrival: ";
 	cin >> hourIn;	
@@ -183,9 +157,9 @@ cin >> minuteIn;
 	cin >> minuteIn;
 	}
 
-cout <<	"Please enter your time of departure, beginning with the hour value (06-24) and then minutes (0-59)" << endl;
+cout <<	"Please enter your time of departure, beginning with the hour value (06-24) and then minutes (00-59)" << endl;
 cout << "Hour of Departure : "; cin >> hourOut;
-	while ((hourOut > 0) && (hourOut < 6) && (hourOut > 24))
+	while ((hourOut < 6) && (hourOut > 24))
 	{cout << "Invalid values. Please enter the hour values again.";
 	cin >> hourOut;
 	}
@@ -194,87 +168,98 @@ cout << "\nMinute of Departure : "; cin >> minuteOut;
 	{cout << "Invalid values. Please enter the minute values again.";
 	cin >> minuteOut;	
 	}
-	
 hourDifference= hourOut-hourIn;
-if ((hourDifference > 3) && (minuteOut > 1))
-estimatedHour = hourDifference++;
-
 minuteDifference= minuteOut-minuteIn;
-if(minuteDifference < 0)
-((minuteDifference *= -1) && (hourDifference -= 1) && (estimatedMinute = minuteDifference*0));
-
+if (minuteDifference > 0)
+	{
+	estimatedHour = hourDifference+1;
+	}
+else if (minuteDifference < 0)
+	{
+	estimatedHour = hourDifference-1;
+	minuteDifference *=-1;
+	}
+//((minuteDifference *= -1) && (hourDifference -= 1) && (estimatedMinute = minuteDifference*0));
+	
 cout << "Time Elapsed: " << hourDifference << " hours and " << minuteDifference << " minutes";
 	
 }
 
-float setRate(int hourDifference, char select, char & sizef, float & firstRate, float & secondRate)
+//for calculating the rates of all vehicles
+float getRate(string vehicleType, int & hourDifference, int & estimatedHour,int & estimatedMinute, float & firstRate, float & secondRate)
 {
-	
-switch (select)
+	system("CLS");
+while ((vehicleType=="Car") || (vehicleType=="Van") || (vehicleType=="SUV"))
 {
-case 'C':
-case 'S':
-case 'V':	
-{
-firstRate= 0.00;
-secondRate= 1.50;	 	 
-break;
-} 	
+firstRate=0.00;
+secondRate=1.50;
 
-case 'B':	
-{
-firstRate= 1.00;
-secondRate=2.50; 
-break;	
+if (hourDifference <=3)
+	{cout << "\n" << firstRate << endl;
+	return firstRate;	
+	}
+else
+	{
+	float totalRate= (secondRate * (estimatedHour - 3));
+	return totalRate;
+	cout << "/n" << totalRate << endl;
+	}
+
+/*
+if (hourDifference <= 3)
+	{
+		totalRate=hourDifference*firstRate;
+		return totalRate;
+	}
+else
+*/	
 }
 
-case 'T':
+while ((vehicleType=="Bus") || (vehicleType=="Small Truck"))
 {
-	switch (sizef)
-		{
-		
-		case 'L':
-		
-		firstRate = 2.00;
-		secondRate = 3.50;
-		break;
-		case 'S':	
-	
-		firstRate = 1.00;
-		secondRate = 2.50;
-		break;}
-		/*{
-	switch (sizef)
-{
-case 'S':
-{
-firstRate= 1.00;
+firstRate=1.00;
 secondRate=2.50;
-break;
-}	
-case 'L':
-{firstRate= 2.00;
-secondRate-3.50;
-break;
-}	
-}	
 
-}*/
-
+if (hourDifference <=2)
+	{cout << "\n" << firstRate << endl;
+	return firstRate;	
+	}
+	else
+	{
+	float totalRate= (firstRate+(secondRate * (estimatedHour-2)));
+	return totalRate;
+	cout << "/n" << totalRate << endl;
 }
 
-	
-cout << firstRate << endl;
-cout << secondRate << endl;
-
-//second rate calculation
-	
-/*if (hourDifference > 3)
+while (vehicleType=="Large Truck")
 {
-newDifference = hourDifference-3
-finalRate=	
-	
-}*/
-return firstRate;
+firstRate=2.00;
+secondRate=3.50;
+if (hourDifference == 1)
+	{cout << "\n" << firstRate << endl;
+	return firstRate;	
+	}
+else
+	{
+	float totalRate= (firstRate + (secondRate * (estimatedHour-1)));
+	return totalRate;
+	cout << "/n" << totalRate << endl;
 }
+
+}
+}
+}
+
+
+// used to print output for vehicles and calculate the final rate
+void print(string vehicleType, int hourIn, int minuteIn, int hourOut, int minuteOut, int & estimatedHour, 
+int & hourDifference, int & minuteDifference, float & firstRate, float & secondRate, float totalRate)
+{	
+cout << "\n Type of Vehicle: " << vehicleType << endl;
+cout << fixed << showpoint << setprecision(2);
+cout << "Time In: " << hourIn << ":" << minuteIn << endl;
+cout << "Time Out: " << hourOut << ":" << minuteOut << endl;
+cout << "Parking-Time " << hourDifference << ":" << minuteDifference << endl;
+cout << "Rounded Time: " << estimatedHour << " hours" << endl;
+cout << "TOTAL DUE: " << "$" << totalRate << endl;
 }
