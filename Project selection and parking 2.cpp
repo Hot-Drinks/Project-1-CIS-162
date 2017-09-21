@@ -28,8 +28,7 @@ string Selection(char a, string & b, char s);
 
 //process
 void HoursInandOut(int &, int &, int &, int &, int &, int &, int &, string &, string &);
-float getRate(string, int &, int, int, 
-				int, float, float);
+float getRate(string, int &, int, int);
 
 //output
 void print(string, int, int &,string &, int, int&, string &, int, 
@@ -40,13 +39,12 @@ int main()
 	char select, sizef, restart;	
 	string vehicleType, ampmDesignator_in, ampmDesignator_out;
 	int hourIn, minuteIn, hourOut, minuteOut, hourDifference,
-		 minuteDifference, estimatedHour,
-		 	cutoff, est_Time;
-	float totalRate, firstRate, secondRate;
+		 minuteDifference, estimatedHour, est_Time;
+	float totalRate;
 
 Selection(select, vehicleType, sizef); //Zailuj's Function 
 HoursInandOut(hourIn, minuteIn, hourOut, minuteOut, hourDifference, minuteDifference,estimatedHour, ampmDesignator_in, ampmDesignator_out); //Keymer's Function
-totalRate = getRate(vehicleType, hourDifference, estimatedHour,cutoff, est_Time, firstRate, secondRate); // Keymer and Zailuj's function
+totalRate = getRate(vehicleType, hourDifference, estimatedHour, est_Time); // Keymer and Zailuj's function
 print(vehicleType, hourIn, minuteIn,ampmDesignator_in, hourOut, minuteOut, ampmDesignator_out, estimatedHour, 
 hourDifference, minuteDifference, totalRate, restart); //Keymer and Zailuj's function
 
@@ -132,6 +130,8 @@ return vehicleType;
  and when they have left by reading the variables inputted only by the user. It will
  then calculate the hours and minutes given and print the time that has passed.
  The function will not accept characters, irrational numbers, or values between 0 and 6 and over 24. 
+ The function also checks for arrivals and departures that are impossible such as 
+ departing earlier than when the user arrived.
 */
 void HoursInandOut(int & hourIn, int & minuteIn, int & hourOut, int & minuteOut, int & hourDifference, int & minuteDifference, 
 int & estimatedHour, string & ampmDesignator_in, string & ampmDesignator_out)
@@ -147,21 +147,24 @@ cout << "\nMinute of Arrival : ";
 cin >> minuteIn;	
 	while ((minuteIn < 0) && (minuteIn > 60))
 	{cout << "Invalid values. Please enter the values again." << endl;
-	cout << "Minute of Arrival: ";
-	cin >> minuteIn;
+	cout << "Minute of Arrival: "; cin >> minuteIn;
 	}
 
 cout <<	"\nPlease enter your time of departure, beginning with the hour value (06-24) and then minutes (00-59)" << endl;
 cout << "\nHour of Departure : "; cin >> hourOut;
-	while ((hourOut < 6) && (hourOut > 24))
+	while ((hourOut < 6) && (hourOut > 24) && (hourOut < hourIn))  
 	{cout << "Invalid values. Please enter the hour values again.";
 	cin >> hourOut;
 	}
-cout << "\nMinute of Departure : "; cin >> minuteOut;	
-	while ((minuteOut < 0) && (minuteOut > 60))
-	{cout << "Invalid values. Please enter the minute values again.";
-	cin >> minuteOut;	
-	}
+	cout << "\nMinute of Departure : "; cin >> minuteOut;	
+		while ((minuteOut < 0) && (minuteOut > 60))
+		{cout << "Invalid values. Please enter the minute values again.";
+		cin >> minuteOut;	
+		}
+		while ((hourIn == hourOut) && (minuteOut < minuteIn))
+		{cout << "Invalid values. Please enter the minute values again.";
+		cin >> minuteOut;	
+		}
 	
 hourDifference= hourOut-hourIn;
 minuteDifference= minuteOut-minuteIn;
@@ -206,25 +209,18 @@ else
 	ampmDesignator_out = "PM";
 }
 //For calculating the rates of all vehicle types
-float getRate(string vehicleType, int & hourDifference, int estimatedHour,
-				  int cutoff, int est_Time, float firstRate, float secondRate)
+float getRate(string vehicleType, int & hourDifference, int estimatedHour, int est_Time)
 {
-est_Time = estimatedHour-cutoff; /* 'est_Time' is the estimated hours minus the cutoff. 
-								This variable would ensure that the original value of
-								'estimatedHour' was intact while also representing the
-								amount of hours that were charged from the second rate.*/
 while ((vehicleType=="Car") || (vehicleType=="Van") || (vehicleType=="SUV"))
 {
-firstRate=0.00;
-secondRate=1.50;
-cutoff = 3; // To represent that after the first 3 hours, the user will be charged with the second rate. 
-if (hourDifference <=cutoff)
-	{cout << "\n" << firstRate << endl;
-	return firstRate;	
-	}
+const float FIRST_RATE=0.00;
+const float SECOND_RATE=1.50;
+const int CUTOFF = 3; // To represent that after the first 3 hours, the user will be charged with the second rate. 
+if (hourDifference <=CUTOFF)
+	return FIRST_RATE;
 else
 	{
-	float totalRate= (secondRate * (estimatedHour - cutoff));
+	float totalRate= (SECOND_RATE * (estimatedHour - CUTOFF));
 	return totalRate;
 	}
 
@@ -232,32 +228,34 @@ else
 
 while ((vehicleType=="Bus") || (vehicleType=="Small Truck"))
 {
-firstRate=1.00;
-secondRate=2.50;
-cutoff = 2; //To represent that after the first 2 hours, the function will use the second rate to charge the user
-
-if (hourDifference <=cutoff)
-	return firstRate*estimatedHour;	
+const float FIRST_RATE=1.00;
+const float SECOND_RATE=2.50;
+const int CUTOFF = 2; //To represent that after the first 2 hours, the function will use the second rate to charge the user
+est_Time = estimatedHour-CUTOFF; /* 'est_Time' is the estimated hours minus the cutoff. 
+								This variable would ensure that the original value of
+								'estimatedHour' was intact while also representing the
+								amount of hours that were charged from the second rate.*/
+if (hourDifference <=CUTOFF)
+	return FIRST_RATE*estimatedHour;	
 else
 	{
 
-	float totalRate= ((firstRate*cutoff) + (secondRate * est_Time));
+	float totalRate= ((FIRST_RATE*CUTOFF) + (SECOND_RATE * est_Time));
 	return totalRate;
-	cout << "/n" << totalRate << endl;
 }
 }
 while (vehicleType=="Large Truck")
 {
-firstRate=2.00;
-secondRate=3.50;
-cutoff = 1; //To represent that after the first hour, the function will use the second rate to charge the user.
-if (hourDifference == cutoff)
+const float FIRST_RATE=2.00;
+const float SECOND_RATE=3.50;
+const int CUTOFF = 1; //To represent that after the first hour, the function will use the second rate to charge the user.
+if (hourDifference == CUTOFF)
 	{
-	return firstRate;	
+	return FIRST_RATE;	
 	}
 else
 	{
-	float totalRate= ((firstRate*cutoff) + (secondRate * est_Time));
+	float totalRate= ((FIRST_RATE*CUTOFF) + (SECOND_RATE * est_Time));
 	return totalRate;
 	}
 
@@ -276,19 +274,19 @@ cout << "\nType of Vehicle: " << vehicleType << endl;
 cout << fixed << showpoint << setprecision(2);
 
 if (minuteIn < 10 )
-	cout << "Time In: \t\t" << hourIn << ":" <<"0"<< minuteIn << " " << ampmDesignator_in << endl;
+	cout << "\nTime In: \t\t" << hourIn << ":" <<"0"<< minuteIn << " " << ampmDesignator_in << endl;
 else
-	cout <<  "Time In: \t\t" << hourIn << ":" << minuteIn << " " << ampmDesignator_in << endl;
+	cout <<  "\nTime In: \t\t" << hourIn << ":" << minuteIn << " " << ampmDesignator_in << endl;
 	
 if (minuteOut < 10)
 	cout << "Time Out: \t\t" << hourOut << ":" <<"0"<< minuteOut <<" "<< ampmDesignator_out<< endl;
 else
 	cout << "Time Out: \t\t" << hourOut << ":" << minuteOut <<" "<< ampmDesignator_out<< endl;
 cout << "_______________________________________" << endl;
-cout << "Parking-Time \t\t" << hourDifference << "Hrs:" << minuteDifference << " minutes"<< endl;
+cout << "\nParking-Time \t\t" << hourDifference << "Hrs:" << minuteDifference << " minutes"<< endl;
 cout << "Rounded Time: \t\t" << estimatedHour << " hours" << endl;
 cout << "_______________________________________" << endl;
-cout << "TOTAL DUE: \t\t" << "$" << totalRate << endl;
+cout << "\nTOTAL DUE: \t\t" << "$" << totalRate << endl;
 
 cout << "\n\nDo you have another vehicle? (Y/N)" << endl; cin >> restart;
 restart = toupper(restart);
@@ -297,7 +295,7 @@ if (restart == 'Y')
 	system("CLS");
 	main();
 	}
-else
+else if (restart == 'N')
 	cout << "Have a nice day.";
 }
 
