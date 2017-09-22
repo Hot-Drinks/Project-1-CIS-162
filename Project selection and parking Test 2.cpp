@@ -24,7 +24,7 @@
 using namespace std;
 
 //input
-string Selection(char a, string & b, char s);
+string Selection(char a, string & b);
 
 //process
 void HoursInandOut(int &, int &, int &, int &, int &, int &, int &, string &, string &);
@@ -36,13 +36,13 @@ int, int, float, char);
 
 int main()
 {
-	char select, sizef, restart;	
+	char select, restart;	
 	string vehicleType, ampmDesignator_in, ampmDesignator_out;
 	int hourIn, minuteIn, hourOut, minuteOut, hourDifference,
 		 minuteDifference, estimatedHour, est_Time;
 	float totalRate;
 
-Selection(select, vehicleType, sizef); //Zailuj's Function 
+Selection(select, vehicleType); //Zailuj's Function 
 HoursInandOut(hourIn, minuteIn, hourOut, minuteOut, hourDifference, minuteDifference,estimatedHour, ampmDesignator_in, ampmDesignator_out); //Keymer's Function
 totalRate = getRate(vehicleType, hourDifference, estimatedHour, est_Time); // Keymer and Zailuj's function
 print(vehicleType, hourIn, minuteIn,ampmDesignator_in, hourOut, minuteOut, ampmDesignator_out, estimatedHour, 
@@ -57,7 +57,7 @@ on the size of the truck. However, the program will only accept characters that 
 and if the user is being asked about their truck's size, characters 'S' and 'L' are only accepted.
 Once the selection is fully confirmed, it will return the character value 'select' later on.
 */
-string Selection(char select, string & vehicleType, char sizef)
+string Selection(char select, string & vehicleType)
 {
 char input;	
 cout << "Welcome to the Passaic County Parking Authority.\n\nPlease select the vehicle that you have parked here by entering the corresponding letter for your selection.";
@@ -69,7 +69,7 @@ select= toupper(input);
 while ((select!='C') && (select!='V') && (select!='S') && (select!='B') && (select!='T'))
 {
 cout << "Invalid input; Please try entering the information once more." << endl;
-Selection(select, vehicleType, sizef);
+Selection(select, vehicleType);
 }
 
 switch(select)
@@ -303,5 +303,4 @@ if (restart == 'Y')
 else if (restart == 'N')
 	cout << "Have a nice day.";
 }
-
 
