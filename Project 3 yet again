@@ -1,0 +1,99 @@
+/*********************************************
+	Name: Keymer A. Botero and Zailuj Hernadez
+	Class: CIS-161 ME1
+	Date: October 19th, 2017
+	Due Date: October 25th, 2017
+	Program Name: Project 3 - Quiz Statistics
+	Description: This program reads a list of
+	Students, from their four-digit IDs. and 
+	each of their three quizzes that they have 
+	taken during the term. In addition, the 
+	program will calculate an average based on 
+	the three quizzes and all the data is kept
+	on a text file name "pr2data"
+***********************************************/
+
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+
+using namespace std;
+
+const int LIST = 50;
+
+typedef int intarray[LIST];
+typedef float farray[LIST];
+
+
+void printall(int [], farray,farray,farray,int);
+int  findqzavg();
+int  findlow();
+int findhigh();
+float findstavg();
+int getdata(int[], intarray,farray,farray,farray,ifstream &);
+
+int main()
+
+{
+	intarray studidnum, num;
+	farray quiz1, quiz2, quiz3, avgt;
+	//______
+	int numofelements;
+	ifstream fin("pr2data.txt");
+	if (!fin)
+       cout << "File does not exist or is not open " << endl;
+    else
+		{
+			
+			printall(studidnum, quiz1,quiz2,quiz3, numofelements);
+			findqzavg();
+			/*
+			findlow();
+			findhigh();
+			findstavg();
+			*/
+			numofelements = getdata (num, studidnum,quiz1,quiz2,quiz3,fin);
+		}
+	
+	
+	return 0;
+}
+/*
+		The purpose of this function is print the data so that user
+		may be able to view a student's ID number, their three 
+		quiz scores, and their average of the three quizzes. In
+		addition, it will only read data from the function "getdata"
+		and will not create any new data. 
+*/
+void printall(intarray studidnum,farray quiz1,farray quiz2, farray quiz3, int cntelements)
+{
+		cout << "\t\tCIS Department - Fall 2017\n\t\t CIS 161 Class Statistics\n";
+		cout << "\t\t==========================\n\n\n";
+		cout << "Student"<<"       "<<"Quiz 1"<<"    "<<"Quiz 2" <<"    "<<"Quiz 3"<<"     "<<""<<endl;
+		cout << "-------"<<"       "<<"------"<<"    "<<"------" <<"    "<<"------"<<"     "<<""<<endl;
+		cout << fixed<<showpoint<<setprecision(2);
+		for(int i = 0; i < cntelements; i++)
+		{
+			cout << left<<setw(6)<<studidnum[i]<<right<<setw(12) <<quiz1[i]<<right<<setw(12) <<quiz2[i];
+			cout << right<<setw(13) <<quiz3[i]<<right<<setw(13) << /*net[i]*/endl;
+		}
+}
+
+/*
+		The purpose of this function is read the id number for each 
+		student and the three quizzes that each student received. 
+		In addition, other functions will refer to this function to 
+		calculate a student's average, highest and lowest scores, and 
+		etc. The function will not create any new data and will only 
+		accept new data from the given text file.
+*/
+int getdata(intarray num, intarray studidnum,  farray quiz1,farray quiz2, farray quiz3,ifstream &fin)
+{	
+	int i = 0;
+	while ( fin >> num[i])
+		fin>>studidnum[i++];
+     	fin>>quiz1[i++];
+		fin>>quiz2[i++];
+		fin>>quiz3[i++];	   
+	return i;	
+}
