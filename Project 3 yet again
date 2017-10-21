@@ -54,7 +54,7 @@ int main()
 			
 			lowquiz2=findlow(numofelements, quiz2);
 			highquiz2=findhigh(numofelements, quiz2);
-			avgquiz1= findqzavg(numofelements, quiz2);
+			avgquiz2= findqzavg(numofelements, quiz2);
 			
 			
 			lowquiz3=findlow(numofelements, quiz3);
