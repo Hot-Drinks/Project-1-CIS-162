@@ -81,6 +81,7 @@ void printall(intarray studidnum,farray quiz1,farray quiz2, farray quiz3, farray
 		cout << "\t\t==========================\n\n\n";
 		cout << "Student"<<"       "<<"Quiz 1"<<"    "<<"Quiz 2" <<"    "<<"Quiz 3"<<"     "<<"    "<<"Average"<<"     "<<"" << endl;
 		cout << "-------"<<"       "<<"------"<<"    "<<"------" <<"    "<<"------"<<"     "<<"    "<< "------"<<"     "<<"" <<endl;
+		cout << fixed<<showpoint<<setprecision(2);
 		for(int i = 0; i < cntelements; i++)
 		{
 			cout << left<<setw(6)<<studidnum[i]<<right<<setw(12) <<quiz1[i]<<right<<setw(12) <<quiz2[i];
