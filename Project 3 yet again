@@ -25,34 +25,44 @@ typedef int intarray[LIST];
 typedef float farray[LIST];
 
 
-void printall(int [], farray,farray,farray,int);
-int  findqzavg();
-int  findlow();
-int findhigh();
-float findstavg();
-int getdata(int[], intarray,farray,farray,farray,ifstream &);
+void printall(int [], farray,farray,farray,farray, int);
+float  findqzavg(int, farray);
+int  findlow(int, farray);
+int findhigh(int, farray);
+float findstavg(int, intarray, farray, farray, farray, farray);
+int getdata(intarray, intarray ,farray, farray, farray, ifstream &);
 
 int main()
 
 {
 	intarray studidnum, num;
-	farray quiz1, quiz2, quiz3, avgt;
+	farray quiz1, quiz2, quiz3, avgt, stavg;
 	//______
-	int numofelements;
+	int numofelements, lowquiz1, lowquiz2, lowquiz3, highquiz1, highquiz2, highquiz3;
+	float avgquiz1, avgquiz2, avgquiz3;
 	ifstream fin("pr2data.txt");
 	if (!fin)
        cout << "File does not exist or is not open " << endl;
     else
 		{
+			numofelements = getdata (num, studidnum, quiz1, quiz2, quiz3, fin);
+//			cout << numofelements << " elements " << endl;
+		
+			lowquiz1=findlow(numofelements, quiz1);
+			highquiz1=findhigh(numofelements, quiz1);
+			avgquiz1=avgquiz1= findqzavg(numofelements, quiz1);
 			
-			printall(studidnum, quiz1,quiz2,quiz3, numofelements);
-			findqzavg();
-			/*
-			findlow();
-			findhigh();
-			findstavg();
-			*/
-			numofelements = getdata (num, studidnum,quiz1,quiz2,quiz3,fin);
+			lowquiz2=findlow(numofelements, quiz2);
+			highquiz2=findhigh(numofelements, quiz2);
+			avgquiz1= findqzavg(numofelements, quiz2);
+			
+			
+			lowquiz3=findlow(numofelements, quiz3);
+			highquiz3=findhigh(numofelements, quiz3);
+			avgquiz3= findqzavg(numofelements, quiz3);
+			
+			findstavg(numofelements, studidnum, quiz1, quiz2, quiz3, stavg);
+			printall(studidnum, quiz1,quiz2,quiz3, stavg, numofelements);
 		}
 	
 	
@@ -65,18 +75,85 @@ int main()
 		addition, it will only read data from the function "getdata"
 		and will not create any new data. 
 */
-void printall(intarray studidnum,farray quiz1,farray quiz2, farray quiz3, int cntelements)
+void printall(intarray studidnum,farray quiz1,farray quiz2, farray quiz3, farray stavg, int cntelements)
 {
 		cout << "\t\tCIS Department - Fall 2017\n\t\t CIS 161 Class Statistics\n";
 		cout << "\t\t==========================\n\n\n";
-		cout << "Student"<<"       "<<"Quiz 1"<<"    "<<"Quiz 2" <<"    "<<"Quiz 3"<<"     "<<""<<endl;
-		cout << "-------"<<"       "<<"------"<<"    "<<"------" <<"    "<<"------"<<"     "<<""<<endl;
-		cout << fixed<<showpoint<<setprecision(2);
+		cout << "Student"<<"       "<<"Quiz 1"<<"    "<<"Quiz 2" <<"    "<<"Quiz 3"<<"     "<<"    "<<"Average"<<"     "<<"" << endl;
+		cout << "-------"<<"       "<<"------"<<"    "<<"------" <<"    "<<"------"<<"     "<<"    "<< "------"<<"     "<<"" <<endl;
 		for(int i = 0; i < cntelements; i++)
 		{
 			cout << left<<setw(6)<<studidnum[i]<<right<<setw(12) <<quiz1[i]<<right<<setw(12) <<quiz2[i];
-			cout << right<<setw(13) <<quiz3[i]<<right<<setw(13) << /*net[i]*/endl;
+			cout << right<<setw(13) <<quiz3[i]<<right<<setw(13);
+			cout << right<<setw(13) << stavg[i]<<right<<setw(13) << endl;
+
 		}
+}
+
+//FIND QUIZ AVG
+float  findqzavg(int numofelements, farray quiz)
+{
+float sum=0;
+float avg;
+for (int i=0; i < numofelements; i++)
+	{
+		sum+=quiz[i];	
+	}
+//cout << "Current sum: " << sum << endl;
+
+avg= (sum/numofelements);
+// cout << "Average: " << avg << endl;
+return avg;
+}
+
+// FIND STUDENT AVERAGE
+float findstavg(int numofelements, intarray studentid, farray quiz1, farray quiz2, farray quiz3, farray stavg)
+{
+farray sum;	// this array will hold the sums of the student's 3 test grades
+for (int i=0; i <= numofelements; i++)
+{
+//	cout << "STUDENT ID: " << studentid[i] << endl;
+	sum[i]= (quiz1[i] +quiz2[i] + quiz3[i]);
+//	cout << "Sum: " << sum[i] << endl;
+	stavg[i]= sum[i]/3;
+//	cout << "Student Average: " << stavg[i] << endl;
+}	
+	
+		
+}
+
+
+//FINDLOW
+int findlow(int numofelements, farray quiz)
+{
+	
+int small= quiz[0];
+for (int i=0; i < numofelements; ++i)
+{
+	if ((quiz[i] < small) && (quiz[i] > 0))
+		{
+		small= quiz[i];
+		}
+}
+//cout << "The smallest in the array is " << small << endl;
+return small;
+}
+
+// FINDHIGH
+
+int findhigh(int numofelements, farray quiz)
+{
+int large= quiz[0];
+for (int i=0; i < numofelements; ++i)
+{
+	if ((quiz[i] > large) && (quiz[i] > 0))
+		{
+		large= quiz[i];
+		}
+}	
+// cout << "The largest in the array is " << large << endl;
+
+return high;
 }
 
 /*
@@ -87,13 +164,19 @@ void printall(intarray studidnum,farray quiz1,farray quiz2, farray quiz3, int cn
 		etc. The function will not create any new data and will only 
 		accept new data from the given text file.
 */
-int getdata(intarray num, intarray studidnum,  farray quiz1,farray quiz2, farray quiz3,ifstream &fin)
+int getdata(intarray num, intarray studidnum, farray quiz1, farray quiz2, farray quiz3, ifstream &fin)
 {	
 	int i = 0;
-	while ( fin >> num[i])
-		fin>>studidnum[i++];
-     	fin>>quiz1[i++];
-		fin>>quiz2[i++];
-		fin>>quiz3[i++];	   
-	return i;	
+	while ( fin >> studidnum[i])
+     	{
+     	//cout << studidnum[i]<< endl;
+	fin >> quiz1[i];
+		// cout << quiz1[i] << endl;
+	fin >> quiz2[i];
+		// cout << quiz2[i] << endl;
+	fin >> quiz3[i];	
+		//cout << quiz3[i]<< endl;
+	i++;
+		 }
+	return i-1;	
 }
