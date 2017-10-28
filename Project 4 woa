@@ -22,27 +22,28 @@
 using namespace std;
 
 typedef vector <int> Idreader;
-typedef vector <float> qzreader; //Might need to add more vectors if needed
+typedef vector <int> value;
+typedef vector <float> qzreader;
+typedef vector <float> average; //Might need to add more vectors if needed
 
 
-void printall();
+int getdata(Idreader &,qzreader &, qzreader &, qzreader &, ifstream&);
+void printall(Idreader,qzreader, qzreader, const qzreader, value, value,
+average stavg, average qzavg);
+	void hi_and_lo_avg(const qzreader &,const qzreader &, const qzreader &, value &, value &,
+	average &, average &);
+		int findhigh(qzreader);
+		int findlow(qzreader);
+		float findqzavg(const qzreader &);
+		void findstavg(const qzreader &, const qzreader &, const qzreader &, average &);
 	void headings();
-	void report(const Idreader &,const qzreader &);
-	void hi_and_lo_avg();
-int getdata(Idreader &,qzreader &, ifstream&);
-/*
-float findqzavg(int, farray);
-int findlow(int, farray);
-int findhigh(int, farray);
-void findstavg(int, intarray, farray, farray, farray, farray);
-*/
-
+	void report(Idreader,qzreader, qzreader, qzreader, Idreader, Idreader, qzreader, qzreader);
 
 int main()
 {
 	
-	Idreader id;
-	qzreader quiz; //'quiz' is just a test variable, subject to change to qz1,qz2,qz3
+	Idreader id,hiqz, loqz;
+	qzreader quiz1, quiz2, quiz3, stavg, qzavg; //'quiz' is just a test variable, subject to change to qz1,qz2,qz3
 	
 	ifstream fin("pr2data.txt");
 
@@ -53,25 +54,66 @@ int main()
    	   }
 		else 
 			{
-				printall();	
-				getdata(id,quiz, fin);
-
+				getdata(id,quiz1, quiz2, quiz3, fin);
+				printall(id, quiz1, quiz2, quiz3, hiqz, loqz, stavg, qzavg);
 	
-return 0;
+				return 0;
 			}			
 }
 
-int getdata( Idreader & ids,qzreader & quiz, ifstream &fin)
+int getdata( Idreader & ids,qzreader & quiz1, qzreader & quiz2, qzreader & quiz3, ifstream &fin)
 {	int idnum;
-	float qz1; 
-	
+	float qz1, qz2, qz3; 
 	while (fin >> idnum)
 	{
 			ids.push_back(idnum);
-			fin >> qz1;
-			quiz.push_back(qz1);
+		//cout << ids[i] << endl;
+		fin >> qz1;
+		quiz1.push_back(qz1);
+		//cout << quiz1[i] << endl;
+		fin >> qz2;
+		quiz2.push_back(qz2);
+		fin >> qz3;
+		quiz3.push_back(qz3);
+		//cout << quiz[i] << endl;
 	}
 	fin.close();
+}
+
+
+
+void printall(Idreader ids,qzreader quiz1, qzreader quiz2, qzreader quiz3, value hiqz, value loqz,
+average stavg, average qzavg)
+{
+		
+headings();
+hi_and_lo_avg(quiz1,quiz2,quiz3, hiqz, loqz, stavg, qzavg);
+report(ids, quiz1, quiz2, quiz3, hiqz, loqz, stavg, qzavg);
+}
+
+/*			
+			FINDS HIGHEST AND LOWEST SCORES AND THEIR AVERAGE
+
+		"hi_and_lo_avg()" will simply find the highest and 
+		lowest scores of each quiz and find average of those 
+		seperate quiz scores.
+*/
+void hi_and_lo_avg(const qzreader & quiz1,const qzreader & quiz2, const qzreader & quiz3, value & hiqz, value & loqz,
+average & stavg, average & qzavg) //I believe its void, subject to change, if needed
+{
+hiqz.push_back(findhigh(quiz1));
+hiqz.push_back(findhigh(quiz2));
+hiqz.push_back(findhigh(quiz3));
+
+loqz.push_back(findlow(quiz1));
+loqz.push_back(findlow(quiz2));
+loqz.push_back(findlow(quiz3));
+
+qzavg.push_back(findqzavg(quiz1));
+qzavg.push_back(findqzavg(quiz2));
+qzavg.push_back(findqzavg(quiz3));
+
+findstavg(quiz1,quiz2,quiz3, stavg);
 }
 
 /*
@@ -81,14 +123,102 @@ int getdata( Idreader & ids,qzreader & quiz, ifstream &fin)
 		that will perform three seperate tasks.No new data is 
 		created
 */
-void printall()
-{
-	Idreader id;
-	qzreader quiz;
+
+/*
+		FIND HIGH
 		
-headings();
-report(id, quiz);
-hi_and_lo_avg();
+		This function will take the students' test scores
+		and pick out the value that is the highest. It can be
+		reused to find highest score of multiple quizzes.
+
+*/
+int findhigh(qzreader quiz)
+{
+int large= quiz[0];
+//cout << "Quiz Size: " << quiz.size() << endl;
+for (int i=0; i < quiz.size()-1; i++)
+{
+//	cout << "Quiz " << i << ": " << quiz[i] << endl;
+	if (quiz[i] >= large)
+		{
+		large= quiz[i];
+		}
+//cout << large << endl;		
+}
+return large;
+}
+
+/*
+		FIND LOW
+	
+		This function will take the students' test scores
+		and pick out the value that is the lowest. It can be
+		reused to find the lowest score of multiple quizzes.
+
+*/
+
+int findlow(qzreader quiz)
+{
+int small= quiz[0];
+//cout << "Quiz Size: " << quiz.size() << endl;
+for (int i=0; i < quiz.size()-1; i++)
+{
+//cout << "Quiz " << i+1 << ": " << quiz[i] << endl;	
+	while ((quiz[i] < small))
+		{
+		small= quiz[i];
+		}				
+}
+//cout << small << endl;
+return small;
+}
+
+
+/*
+		FIND QUIZ AVERAGE
+		
+		This function will take a class's quiz values and find the
+		total class average. It will do this by totaling up each student's 
+		quiz result and then dividing it by the number of quiz results.
+		This function is reusable and can be called to find multiple
+		quiz averages.
+
+*/
+float findqzavg(const qzreader & quiz)
+{
+float sum=0, avg;
+//cout << "Quiz Size: " << quiz.size() << endl;
+for (int i=0; i < quiz.size(); i++)
+	{
+//		cout << "Quiz " << i+1 << ": " << quiz[i] << endl;	
+		sum+=quiz[i];
+//		cout << "Current Sum Quiz " << i+1 << ": " << sum << endl;
+	}
+	
+// cout << "Total sum: " << sum << endl;
+
+avg= (sum/quiz.size());
+//cout << "Average: " << avg << endl;
+return avg;	
+}
+
+/*
+		FIND STUDENT AVERAGE
+		
+		This function will take each student's test scores and calculate
+		an average for each one of them, and then store it.
+*/
+void findstavg(const qzreader & quiz1, const qzreader & quiz2, const qzreader & quiz3, average & stavg)
+{
+	for (int i =0; i < quiz1.size(); i++)
+	{
+		stavg.push_back((quiz1[i]+quiz2[i]+quiz3[i])/3);		
+	}
+
+/*	for (int i=0; i < quiz1.size(); i++)
+	{	
+	cout << "Student Average #" << i+1 << ": " << stavg[i] << endl;
+	} */
 }
 
 /*			CREATES HEADINGS FOR DATA
@@ -112,26 +242,24 @@ void headings()
 		and each average that each student ended with.
 		No new data is created
 */
-void report(const Idreader & ids,const qzreader & quiz)
+void report(Idreader ids,qzreader quiz1, qzreader quiz2, qzreader quiz3,value hiqz, value loqz,
+average stavg, average qzavg)
 {
-	for(int i = 0; i < ids.size(); i++)
-		
-			cout << left<<setw(6)<<ids[i]<<right<<setw(12) <<quiz[i];/*<<right<<setw(12) <<quiz2[i];
+	for(int i = 0; i < ids.size()-1; i++)
+		{
+			cout << left<<setw(6)<<ids[i]<<right<<setw(12) <<quiz1[i]<<right<<setw(12) <<quiz2[i];
 			cout << right<<setw(10) <<quiz3[i]<<right<<setw(12);
 			cout << fixed<<showpoint<<setprecision(2);
 			cout << right<<setw(10) << stavg[i]<<right<<setw(12) << endl;
-			*/
 			cout << noshowpoint << setprecision(0);
-}
-
-/*			
-			FINDS HIGHEST AND LOWEST SCORES AND THEIR AVERAGE
-
-		"hi_and_lo_avg()" will simply print the highest and 
-		lowest scores of each quiz and find average of those 
-		seperate quiz scores.
-*/
-void hi_and_lo_avg() //I believe its void, subject to change, if needed
-{
-	
+		}
+		
+	cout << left<<setw(6) << "\nHigh Score" << right << setw(8) << hiqz[0] << right << setw(12) << hiqz[1];
+		cout << right << setw(10) << hiqz[2]<<endl;
+	cout << left<<setw(6) << "Low Score" << right << setw(9) << loqz[0] << right << setw(12) << loqz[1];
+		cout << right << setw(10) << loqz[2]<<endl;
+	cout << fixed<<showpoint<<setprecision(2);
+		cout << left<<setw(6) << "Quiz Average" << right << setw(8) << qzavg[0] << right << setw(12) << qzavg[1];
+	cout << right << setw(10) << qzavg[2]<<endl;
+	cout << noshowpoint << setprecision(0);
 }
