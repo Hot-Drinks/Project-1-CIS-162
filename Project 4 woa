@@ -1,0 +1,137 @@
+/*********************************************
+	Name: Keymer A. Botero and Zailuj Hernadez
+	Class: CIS-161 ME1
+	Date: October 27th, 2017
+	Due Date: November 1st, 2017
+	Program Name: Project 4 - Quiz Statistics
+	(Vectors)
+	Description: This program reads a list of
+	Students, from their four-digit IDs. and 
+	each of their three quizzes that they have 
+	taken during the term. In addition, the 
+	program will calculate an average based on 
+	the three quizzes and all the data is kept
+	on a text file name "pr2data"
+***********************************************/
+
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <vector>
+
+using namespace std;
+
+typedef vector <int> Idreader;
+typedef vector <float> qzreader; //Might need to add more vectors if needed
+
+
+void printall();
+	void headings();
+	void report(const Idreader &,const qzreader &);
+	void hi_and_lo_avg();
+int getdata(Idreader &,qzreader &, ifstream&);
+/*
+float findqzavg(int, farray);
+int findlow(int, farray);
+int findhigh(int, farray);
+void findstavg(int, intarray, farray, farray, farray, farray);
+*/
+
+
+int main()
+{
+	
+	Idreader id;
+	qzreader quiz; //'quiz' is just a test variable, subject to change to qz1,qz2,qz3
+	
+	ifstream fin("pr2data.txt");
+
+	if (!fin)
+       {
+	   cout << "File does not exist or is not open " << endl;
+       return 1;
+   	   }
+		else 
+			{
+				printall();	
+				getdata(id,quiz, fin);
+
+	
+return 0;
+			}			
+}
+
+int getdata( Idreader & ids,qzreader & quiz, ifstream &fin)
+{	int idnum;
+	float qz1; 
+	
+	while (fin >> idnum)
+	{
+			ids.push_back(idnum);
+			fin >> qz1;
+			quiz.push_back(qz1);
+	}
+	fin.close();
+}
+
+/*
+			CALLING THREE SEPERATE SUB-FUNCTIONS FOR NEEDED TASKS 
+			
+		The purpose of this function will call three sub-functions
+		that will perform three seperate tasks.No new data is 
+		created
+*/
+void printall()
+{
+	Idreader id;
+	qzreader quiz;
+		
+headings();
+report(id, quiz);
+hi_and_lo_avg();
+}
+
+/*			CREATES HEADINGS FOR DATA
+
+		"headings()" will simply print needed headings for a 
+		student's ID number and quiz scores. No New data is created
+*/
+void headings()
+{		
+	cout << "\t\tCIS Department - Fall 2017\n\t\t CIS 161 Class Statistics\n";
+	cout << "\t\t==========================\n\n\n";
+	cout << "Student"<<"       "<<"Quiz 1"<<"    "<<"Quiz 2" <<"    "<<"Quiz 3"<<"    "<<"Average"<<"     "<<"" <<endl;
+	cout << "-------"<<"       "<<"------"<<"    "<<"------" <<"    "<<"------"<<"    "<< "------"<<"     "<<"" <<endl;
+	
+}
+
+/*			PRINTS DATA FOR USER TO READ
+
+ 		"report()" will print all student ID's given from 
+		the "pr2data.txt" file, each of their quiz scores, 
+		and each average that each student ended with.
+		No new data is created
+*/
+void report(const Idreader & ids,const qzreader & quiz)
+{
+	for(int i = 0; i < ids.size(); i++)
+		
+			cout << left<<setw(6)<<ids[i]<<right<<setw(12) <<quiz[i];/*<<right<<setw(12) <<quiz2[i];
+			cout << right<<setw(10) <<quiz3[i]<<right<<setw(12);
+			cout << fixed<<showpoint<<setprecision(2);
+			cout << right<<setw(10) << stavg[i]<<right<<setw(12) << endl;
+			*/
+			cout << noshowpoint << setprecision(0);
+}
+
+/*			
+			FINDS HIGHEST AND LOWEST SCORES AND THEIR AVERAGE
+
+		"hi_and_lo_avg()" will simply print the highest and 
+		lowest scores of each quiz and find average of those 
+		seperate quiz scores.
+*/
+void hi_and_lo_avg() //I believe its void, subject to change, if needed
+{
+	
+}
