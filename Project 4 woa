@@ -42,9 +42,10 @@ average stavg, average qzavg);
 int main()
 {
 	
-	Idreader id,hiqz, loqz;
-	qzreader quiz1, quiz2, quiz3, stavg, qzavg; //'quiz' is just a test variable, subject to change to qz1,qz2,qz3
-	
+	Idreader id;
+	value hiqz, loqz;
+	qzreader quiz1, quiz2, quiz3; //'quiz' is just a test variable, subject to change to qz1,qz2,qz3 
+	average stavg, qzavg; 	
 	ifstream fin("pr2data.txt");
 
 	if (!fin)
