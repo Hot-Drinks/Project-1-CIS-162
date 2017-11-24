@@ -43,7 +43,7 @@ void setdata (Student *);
 //Project 5 functions
 void simpsearch(Student *);
 void firstSearch(Student *);
-	void bubbleSort(Student *, int &, Searchvalues &);
+	void bubbleSort(Student *);
 		void swap(float * x, float * y);
 		void swap(int * x, int * y);
 	int Bin_Search(Student *, float & value);
@@ -108,7 +108,7 @@ void simpsearch(Student * Info)
 	cout << "The students that have a quiz average of 85 or more are : \n" << endl;
 		for(int i = 20; i > 0; i--)
 		{
-			cout << (*Info).avgt<<endl;
+			//cout << (*Info).avgt<<endl;
 			if ((*Info).avgt >= 85.00)
 				{
 				cout << "ID number : " << (*Info).id << " has a " << (*Info).avgt << " average so far." << endl;
@@ -133,16 +133,34 @@ void firstSearch(Student * Info)
 	Searchvalues values;
 	int elements=0;
 //call function that sorts the arrays in ascending order based on the averages
-bubbleSort(Info, elements, values);
-cout << "Elements: " << elements << endl;
+bubbleSort(Info);
+// A for loop to count how many values are going to be searched
+// and store them in a vector 
+for (int i=0; i< LIST; i++)
+{
+// To test if structure is passing	
+//cout << i+1 <<  ": ID: " << ((Info+i)->id) << "\tAVGT: " << ((Info+i)->avgt) << endl;
+if ((Info+i)->avgt >= 85.00)
+{
+	cout << "IMPORTANT POSITION " << i << ": " << ((Info+i)->avgt) << endl;	// test dialogue to show value position
+	elements++;
+	values.push_back((Info+i)->avgt);
+}
+}
+//	To test if elements are being counted correctly
+/*for (int i=0; i < elements; i++)
+{
+	cout << (values[i]) << " " << endl;
+}
+cout << "Elements: " << elements << endl;*/
 
 // call search function that uses a binary search to return the position if score of >=85 found	
 for (int i=0; i < elements; i++)
 {
 position.push_back(Bin_Search(Info, values[i]));
-
-cout << "Positions: " << position[i] << endl;
-
+cout << "Value: " << values[i] << endl;
+//cout << "Position: " << position[i] << endl;
+cout << "ID: "<< (Info+position[i])->id << "\t AVGT: " << (Info+position[i])->avgt << " \n" << endl;
 }
 
 }
@@ -156,9 +174,8 @@ cout << "Positions: " << position[i] << endl;
 	store the values and how many there are to aid in
 	searching
 */
-void bubbleSort(Student * Info, int & elements, Searchvalues & values) //float * average, int * id
+void bubbleSort(Student * Info) //float * average, int * id
 {
-elements=0;	
 for (int i = 0; i < (LIST-1); i++)
  {
  	
@@ -170,25 +187,6 @@ swap(((Info+j)->avgt), ((Info+(j+1))->avgt));
 swap(((Info+j)->id), ((Info+(j+1))->id));	
 }
 }
-}
-
-// A for loop to count how many values are going to be searched
-// and store them in a vector 
-for (int i=0; i< LIST; i++)
-{
-cout << i+1 <<  ": ID: " << ((Info+i)->id) << "\tAVGT: " << ((Info+i)->avgt) << endl;
-if ((Info+i)->avgt >= 85.00)
-{
-	cout << "IMPORTANT " << i+1 << ": " << ((Info+i)->avgt) << endl;
-	elements++;
-	values.push_back((Info+i)->avgt);
-}
-}
-//	To test if elements are being counted correctly
-cout << elements << " tests over 85" << endl;
-for (int i=0; i < elements; i++)
-{
-	cout << elements << " values:\n" << (values[i]) << " " << endl;
 }
 }
 
@@ -227,7 +225,7 @@ y = t;
 int Bin_Search(Student * Info, float & value)
 {
 int first = 0, // First array element
-	last = LIST - 1, // Last array element
+	last = LIST-1, // Last array element
 middle, // Midpoint of search
 position = -1; // Position of search value
 bool found = false; // Flag
@@ -244,6 +242,5 @@ last = middle - 1;
 else
 first = middle + 1; // If value is in upper half
 }
-
 return position;
 }
