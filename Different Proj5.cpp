@@ -244,3 +244,37 @@ first = middle + 1; // If value is in upper half
 }
 return position;
 }
+
+/*
+			SELECTIONSORT
+			
+*/
+ void selectionSort(Student * const Info)
+{
+int passes=0;	
+int startScan, minIndex, minValue;
+for (startScan = 0; startScan < (LIST - 1); startScan++)
+{
+minIndex = startScan;
+minValue = (Info+startScan)->id;
+//cout << "Min Value: " << minValue << endl;
+for(int index = startScan + 1; index < LIST; index++)
+{
+if (((Info+index)->id) < (minValue))
+{
+minValue = (Info+index)->id;
+minIndex = index;
+passes++;
+}
+}
+
+(Info+minIndex)->id = (Info+startScan)->id;
+(Info+startScan)->id = minValue;
+//cout << (Info+startScan)->id << endl;
+}
+for (int i=0; i< LIST; i++)
+{
+	cout << "ID: " << (Info+i)->id << "\t AVGT: " << (Info+i)->avgt << endl;
+}
+cout << "Sorted " << passes <<  " times" << endl;
+}
