@@ -15,7 +15,6 @@
 	multiple search-and-sort methods
 ***********************************************/
 #include <iostream>
-# include <vector>
 #include <iomanip>
 #include <fstream>
 
@@ -30,14 +29,7 @@ typedef struct Student
 	int id,q1, q2, q3;
 	float avgt;
 	
-}Stud[LIST];
-
-/*			VECTORS
-		These are temporarily holding these values.
-		They will be replaced with appropriate pointers.
-*/		
-typedef vector <float> Searchvalues;
-typedef vector <int> Positionvalues;  
+}Stud[LIST];	
 
 void setdata (Student *);
 //Project 5 functions
@@ -46,7 +38,7 @@ void firstSearch(Student *);
 	void bubbleSort(Student *);
 		void swap(float * x, float * y);
 		void swap(int * x, int * y);
-	int Bin_Search(Student *, float & value);
+	int Bin_Search(Student *, float * value);
 void selectionSort(Student *);
 //====================================================================================
 
@@ -131,9 +123,13 @@ void simpsearch(Student * Info)
 
 void firstSearch(Student * Info)
 {
-	Positionvalues position;
-	Searchvalues values;
-	int elements=0;
+	//Positionvalues position;
+	//Searchvalues values;
+	int elements=0, j=0;
+	int * position;
+	float * values;
+	position= new int[elements];
+	values= new float[elements];
 
 cout << "Current Students At Or Above An 85.00 Average: " << endl;	
 for (int i=0; i< LIST; i++)
@@ -148,33 +144,37 @@ if ((Info+i)->avgt >= 85.00)
 //call function that sorts the arrays in ascending order based on the averages
 bubbleSort(Info);
 // A for loop to count how many values are going to be searched
-// and store them in a vector 
+// and store them in a float value
 for (int i=0; i< LIST; i++)
 {
 // To test if structure is passing	
 //cout << i+1 <<  ": ID: " << ((Info+i)->id) << "\tAVGT: " << ((Info+i)->avgt) << endl;
 if ((Info+i)->avgt >= 85.00)
 {
-	//cout << "IMPORTANT POSITION " << i << ": " << ((Info+i)->avgt) << endl;	// test dialogue to show value position
+	cout << "IMPORTANT POSITION " << i << ": " << ((Info+i)->avgt) << endl;	// test dialogue to show value position
 	elements++;
-	values.push_back((Info+i)->avgt);
+	*(values+j)= (Info+i)->avgt; //(values.push_back((Info+i)->avgt));
+	j++;
+	//cout << "VALUES: " << *(values+(j-1)) << endl;	// test Value output
 }
 }
 //	To test if elements are being counted correctly
-/*for (int i=0; i < elements; i++)
+for (int i=0; i < elements; i++)
 {
-	cout << (values[i]) << " " << endl;
+	cout << *(values+i) << " " << endl;
 }
-cout << "Elements: " << elements << endl;*/
+cout << "Elements: " << elements << endl;
 
 // call search function that uses a binary search to return the position if score of >=85 found	
 for (int i=0; i < elements; i++)
 {
-position.push_back(Bin_Search(Info, values[i]));
-cout << "Value: " << values[i] << endl;
-//cout << "Position: " << position[i] << endl;
-cout << "ID: "<< (Info+position[i])->id << "\t AVGT: " << (Info+position[i])->avgt << " \n" << endl;
+*(position+i)= Bin_Search(Info, (values+i));	
+cout << "Value: " << *(values+i)<< endl;
+cout << "Position: " << *(position+i) << endl;
+cout << "ID: "<< (Info+(*(position+i)))->id << "\t AVGT: " << (Info+(*(position+i)))->avgt << " \n" << endl;
 }
+delete [] values;
+delete [] position;
 }
 
 
@@ -239,7 +239,7 @@ y = t;
 	
 */
 
-int Bin_Search(Student * Info, float & value)
+int Bin_Search(Student * Info, float * value)
 {
 int first = 0, // First array element
 	last = LIST-1, // Last array element
@@ -249,12 +249,12 @@ bool found = false; // Flag
 while (!found && first <= last)
 {
 middle = (first + last) / 2; // Calculate midpoint
-if ((Info+middle)->avgt == value) // If value is found at mid
+if ((Info+middle)->avgt == *(value)) // If value is found at mid
 {
 found = true;
 position = middle;
 }
-else if ((Info+middle)->avgt > value) // If value is in lower half
+else if ((Info+middle)->avgt > *(value)) // If value is in lower half
 last = middle - 1;
 else
 first = middle + 1; // If value is in upper half
