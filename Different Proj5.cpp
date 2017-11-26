@@ -47,6 +47,7 @@ void firstSearch(Student *);
 		void swap(float * x, float * y);
 		void swap(int * x, int * y);
 	int Bin_Search(Student *, float & value);
+void selectionSort(Student *);
 //====================================================================================
 
 int main()
@@ -59,6 +60,7 @@ int main()
     	setdata (GradeInfo);
 		simpsearch(GradeInfo);
 		firstSearch(GradeInfo);
+		selectionSort(GradeInfo);
 	}
 	delete[] GradeInfo;
 }
@@ -132,6 +134,17 @@ void firstSearch(Student * Info)
 	Positionvalues position;
 	Searchvalues values;
 	int elements=0;
+
+cout << "Current Students At Or Above An 85.00 Average: " << endl;	
+for (int i=0; i< LIST; i++)
+{
+// displays the ids and averages that are greater than or equals to 85.00
+if ((Info+i)->avgt >= 85.00)
+{
+	cout << "ID: " << ((Info+i)->id) << "\t";	// test dialogue to show value position
+	cout << "AVERAGE: " << ((Info+i)->avgt) << endl;
+}
+}
 //call function that sorts the arrays in ascending order based on the averages
 bubbleSort(Info);
 // A for loop to count how many values are going to be searched
@@ -142,7 +155,7 @@ for (int i=0; i< LIST; i++)
 //cout << i+1 <<  ": ID: " << ((Info+i)->id) << "\tAVGT: " << ((Info+i)->avgt) << endl;
 if ((Info+i)->avgt >= 85.00)
 {
-	cout << "IMPORTANT POSITION " << i << ": " << ((Info+i)->avgt) << endl;	// test dialogue to show value position
+	//cout << "IMPORTANT POSITION " << i << ": " << ((Info+i)->avgt) << endl;	// test dialogue to show value position
 	elements++;
 	values.push_back((Info+i)->avgt);
 }
@@ -162,8 +175,8 @@ cout << "Value: " << values[i] << endl;
 //cout << "Position: " << position[i] << endl;
 cout << "ID: "<< (Info+position[i])->id << "\t AVGT: " << (Info+position[i])->avgt << " \n" << endl;
 }
-
 }
+
 
 
 /*
@@ -176,20 +189,24 @@ cout << "ID: "<< (Info+position[i])->id << "\t AVGT: " << (Info+position[i])->av
 */
 void bubbleSort(Student * Info) //float * average, int * id
 {
+bool swoop;
+do
+{
 for (int i = 0; i < (LIST-1); i++)
  {
- 	
+ swoop=false;	
  for (int j = 0; j < (LIST-i-1); j++)
 {
 if (((Info+j)->avgt) >= ((Info+(j+1))->avgt))
 {
 swap(((Info+j)->avgt), ((Info+(j+1))->avgt));
-swap(((Info+j)->id), ((Info+(j+1))->id));	
+swap(((Info+j)->id), ((Info+(j+1))->id));
+swoop=true;
 }
 }
 }
+} while (swoop);
 }
-
 /* 
 
 				SWAP FUNCTIONS
@@ -244,6 +261,7 @@ first = middle + 1; // If value is in upper half
 }
 return position;
 }
+
 
 /*
 			SELECTIONSORT
