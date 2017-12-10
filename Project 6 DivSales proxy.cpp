@@ -28,9 +28,14 @@ class region
         						elements for holding 4 quarters of sales
         						figures for the sales
         					*/       	
-		int qtr1,qtr2,qtr3,qtr4;
+		int qtr1,qtr2,qtr3,qtr4, regionTotal;
+		static int all_RegSales;  
 		
-		//static int all_RegSales;        		
+		void setName(string & reg);
+		void setRegSales();
+        void setSale();
+        void setAllReg();
+              		
         
     
 		//void getAllSales() const; 
@@ -39,12 +44,17 @@ class region
         
         
     public:
-        ~region();
     	region();
 		      	      
         void setRegion();
-    	void setRegSales();
+        string getName(){return enterReg;};
+        int getAllReg();
+    	int getSale();
+    	friend printSales(region, const int, const int j);
+    	~region();
 };
+
+int printSales(region, const int i,const int j);
 
 region::region()
 {
@@ -53,7 +63,8 @@ region::region()
 	qtr2 = 0;
 	qtr3 = 0;
 	qtr4 = 0;
-	arr_Sales = new int[4]; //starts the pointer to 4 elements
+	// all_RegSales=0;
+	arr_Sales = new int[3]; //starts the pointer to 4 elements
 }
 
 /*Destructor makes sure array properly release memory from array to
@@ -64,14 +75,36 @@ region::~region()
 		delete [] arr_Sales;
 }
 
-//int region::all_RegSales = 0;
+int region::all_RegSales = 0;
 /*****************************************************************/
 
 int main()
 {
-		region money;
+		region money[4];
+		char yesno, ans;
+		int i=0, j=0, reg, value;
 		
-	money.setRegion();
+		//int i, j;
+	for (int k=0; k<4; k++)	
+	{cout << "REGION # " << (k+1) << endl;
+	money[k].setRegion();
+	}
+	
+/*	cout << "Would you like to search for a value?"; cin >> yesno;
+	ans=toupper(yesno);
+	if (ans='Y')
+		{
+		cout <<  "What Region are you looking for?\n" <<
+			"Enter 1 for " << money[0].getName() << " 2 for " << money[1].getName() << 
+			"\n 3 for " << money[2].getName() <<  " or 4 for " << money[3].getName() << 
+			"\nfollowed by the quarter you wish to search for"<< endl; 
+		cin >> i; cin >> j;
+		printSales(money[i],i, j);		
+		cout << "Would you like to search for a value?"; cin >> yesno;
+		ans=toupper(yesno);
+		}
+		else
+			cout << "Thank you for using the program." << endl;*/
 	
 	return 0;	
 }
@@ -87,15 +120,20 @@ int main()
 */
 void region::setRegion()
 {
-	for(int i = 0; i < 3; i++)
 		{
-		cout << "\nPlease enter Region name : "; getline(cin, enterReg);	
-			for (int j = 0; j < 3; j++)
-				{
+		string reg;			
+					setName(reg);
 					setRegSales();
-				}	
-		cout << "\nRegion "<< enterReg /*<< " has " << all_RegSales<< " in total sales"*/ <<endl; 
+					
+		cin.get();
+		cin.ignore();			
 		}
+}
+
+void region::setName(string & reg)
+{
+	cout << "\nPlease enter Region name : "; getline(cin, reg);
+	enterReg=reg;
 }
 
 
@@ -108,10 +146,52 @@ void region::setRegion()
 */
 void region::setRegSales()
 {
-	cout << "\nPlease enter Quarter 1 : "; cin >> qtr1;
-	cout << "\nPlease enter Quarter 2 : "; cin >> qtr2;			
-	cout << "\nPlease enter Quarter 3 : "; cin >> qtr3;	
-	cout << "\nPlease enter Quarter 4 : "; cin >> qtr4;
-	//all_RegSales = qtr1+qtr2+qtr3+qtr4; Causes error
-	cout << qtr1 <<"\n"<< qtr2 <<"\n"<< qtr3 << "\n"<<qtr4;	
+	region sales;
+	regionTotal=0;
+	for (int i=0; i<4; i++)
+	{
+	cout << "\nPlease enter Quarter " << (i+1) << ": "; cin >> *(arr_Sales+i);
+	//cout << "Arr Sales: " << *(arr_Sales+i) << endl;
+	regionTotal+= *(arr_Sales+i);
+	}
+	//setSale();
+	//setAllReg();
+	all_RegSales+= regionTotal;
+	cout << "\nRegion "<< getName() << " has " << getSale() << " in total sales" <<endl; 
+	cout << "Overall Total: " << getAllReg() << endl;	
+	}
+	
+/* 
+	SET AND GET FUNCTIONS
+	These set and get functions are used to get a region's
+	total quarterly sales as well as calculate the overall
+	total sales for all regions
+*/	
+/*void region::setSale()
+{
+	for (int i=0; i<3; i++)
+		regionTotal+= *(arr_Sales+i);
+}	
+
+void region::setAllReg()
+{
+	all_RegSales+= getSale();
+}*/
+
+int region::getSale()
+{
+return regionTotal;	
 }
+
+int region::getAllReg()
+{
+	return all_RegSales;
+}
+
+int printSales(region sales, const int i,const int j)
+//int region::printSales(const region sales, const int i,const int j)
+{
+	cout << sales.getName() << "'s " << (j) << "quarter had " << endl; //<< sales.*(arr_Sales+(j-1));
+	return 0;	
+}
+	
