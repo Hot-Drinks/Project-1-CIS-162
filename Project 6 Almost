@@ -1,0 +1,164 @@
+/******************************************************************
+		Names : Keymer A. Botero, Zailuj Hernadez
+		Class : CIS-161 ME1
+		Date  : December 8th, 2017
+		Due Date : December 13th, 2017
+		Program Name : Project 6 Division of Sales
+		Description: The program should ask the user to enter the DivSales's name, 
+		and sales for four quarters for each region.
+		After the data is entered, the program should display
+		a table showing each region's name followed by the sales
+		for each quarter, and then followed by the total
+		sale for the region. At the end, the program will 
+		display the total corporate sales for the year.
+*******************************************************************/
+
+
+#include <iostream>
+#include <cctype>
+#include <string>
+
+using namespace std;
+
+typedef class DivSales
+{
+	 private:
+        string enterReg[4]; //holds "East", "West", etc..
+    	
+		float qtr[4]; //holds 4 quarters of yearly sales data
+		int regionTotal; 
+		
+		static int totalCorpSales;  
+		
+		void setName();
+		void setRegSales(int);
+
+        
+    public:
+    	DivSales();
+		      	      
+        void setRegion(int);
+        const string getName(int);     		
+        const int getAllSales();
+    	const int getSale();       
+
+    	void print();
+    	
+    	~DivSales(){};
+    	
+}salesArray[4];
+
+
+DivSales::DivSales()
+{
+	for(int a = 0; a < 3; a++)
+	{
+		enterReg[a] = "";
+			for(int b = 0; b < 3; b++)
+				qtr[b] = 0;
+	}
+}
+
+int DivSales::totalCorpSales = 0;
+
+const string DivSales::getName(int i)
+{return enterReg[i];};  
+//================================================================================
+
+int main()
+{
+	DivSales Div[4];		
+	int c;
+		
+		//cout << "REGION # " << c+1 << endl;
+		Div[c].setRegion(c);	
+		Div[c].print();
+		
+	
+return 0;
+}
+//=================================================================================
+
+/*
+			SETS REGION NAME
+		
+		Function allows user to input Region name, one at a time.
+		In addition, a seperate function is called to set quarterly
+		sales data. Afterwards, Function loops back and begins naming
+		process again
+*/
+void DivSales::setRegion(int c)
+{
+		
+	for(int i = 0; i < 4 ; i++)	
+		{
+			setName();
+			setRegSales(c);
+		
+		cin.get();
+		cin.ignore();			
+		}
+}
+//=================================================================================
+
+void DivSales::setName()
+{
+static int i = 0;
+string reg;
+	cout << "\nPlease enter Region name : "; getline(cin, reg);
+	enterReg[i]=reg;
+	i++;
+}
+//=================================================================================
+/*
+			SETS QUARTER IN REGION
+			
+		Function allows user to input quarterly sales data
+		and displays that data back to the user to check.
+		
+		*In the meantime, Function will accumulate qtr values 
+		to create the Region's total sales, "regionTotal"
+		
+		*In addition, Function will accumulate values from 
+		multiple instances of regionTotal to form TotalCorpSales
+		
+*/
+void DivSales::setRegSales(int c)
+{
+	regionTotal=0;
+	for (int i=0; i<4; i++)
+			{
+				cout << "\nPlease enter Quarter " << (i+1) << ": "; cin >> qtr[i];
+				regionTotal+=qtr[i];
+			}
+		
+	totalCorpSales+= regionTotal;
+	cout << "\nRegion "<< getName(c) << " has " << getSale() << " in total sales" <<endl; 
+	cout << "Overall Total: " << regionTotal << endl;	
+}
+	
+//=================================================================================
+
+const int DivSales::getSale()
+{
+	return regionTotal;	
+}
+//=================================================================================
+
+const int DivSales::getAllSales()
+{
+	return totalCorpSales;
+}
+//=================================================================================
+void DivSales::print()
+{system("CLS");
+	
+		for(int j =0; j < 4 ; j++)
+			{
+				cout << getName(j) <<endl;
+				for(int d = 0; d < 4; d++)
+					cout << "\tQuarter " << (d+1) <<" "<< qtr[d]<<endl;
+				cout <<"\t\tRegion's Total : "<< getSale() <<endl;
+			}					
+		cout <<"All Region's Sales in total : " << getAllSales() << endl;
+}
