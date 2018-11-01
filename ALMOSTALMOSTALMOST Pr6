@@ -17,38 +17,39 @@
 #include <iostream>
 #include <cctype>
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
-typedef class DivSales
+class DivSales
 {
 	 private:
-        string enterReg[4]; //holds "East", "West", etc..
+        string enterReg; //holds "East", "West", etc..
     	
-		float qtr[4]; //holds 4 quarters of yearly sales data
-		int regionTotal; 
+		int qtr[4]; //holds 4 quarters for the four regions.
+		int regionTotal; //holds 4 totals of each regions 
 		
 		static int totalCorpSales;  
 		
 		void setName();
-		void setRegSales(int);
+		void setRegSales();
 
-        
     public:
     	DivSales();
 		      	      
-        void setRegion(int);
-        const string getName(int);     		
+        void setRegion();
+        const string getName();     		
         const int getAllSales();
     	const int getSale();       
 
     	void print();
     	
-    	friend const int search(DivSales Div[], const int & i, const int & j);
+		//const int search(DivSales Div[], const int & i, const int & j);
     	
     	~DivSales(){};
+		
     	
-}salesArray[4];
+};
 
 const int search(DivSales Div[], const int & i, const int & j);
 
@@ -56,34 +57,42 @@ DivSales::DivSales()
 {
 	for(int a = 0; a < 4; a++)
 	{
-		enterReg[a] = "";
+		enterReg = "";
 			for(int b = 0; b < 3; b++)
 				qtr[b] = 0;
-	}
+	}	
+			regionTotal = 0;	
 }
 
 int DivSales::totalCorpSales = 0;
-
 //================================================================================
+
 
 int main()
 {
-	DivSales * Div;
-	Div= new DivSales[4];
-	char yesno, ans;		
-	int c, i, j;
+	DivSales regsales[4];
+	//char yesno, ans;		
+	int i, j;
 //		cout << "REGION # " << i+1 << endl;
-		Div[c].setRegion(c);	
-//		Div[c].print();
-	cout << "Search for a value? "; cin >> yesno;
+	for (int c = 0; c < 4; c++)
+		{
+			regsales[c].setRegion(); 
+		}
+system("CLS");
+		for (int d= 0; d< 4; d++)
+			{
+				regsales[d].print();
+			}
+	cout << "All Regions Total : "<< regsales[4].getAllSales();
+		
+	
+/*	cout << "Search for a value? "; cin >> yesno;
 	ans=toupper(yesno);
 	if (ans='Y')
 	{
 		cout << "What region and quarter?"; cin >> i; cin >> j;
-		cout << "The " << Div[c].getName(j-1)<< " region's " << j << " quarter sales is " << search(Div,i,j) << endl;
-	}
-	delete [] Div;	
-	
+		cout << "The " << regsales[c].getName(j-1)<< " region's Quarter " << j << "'s  sales is " << search(Div,i,j) << endl;
+	}*/	
 return 0;
 }
 //=================================================================================
@@ -96,17 +105,14 @@ return 0;
 		sales data. Afterwards, Function loops back and begins naming
 		process again
 */
-void DivSales::setRegion(int c)
+void DivSales::setRegion()
 {
-	for(int i = 0; i < 4 ; i++)	
-	{
-		
+	
 		setName();
-		setRegSales(c);
-	c++;
+		setRegSales();
 		cin.get();
 		cin.ignore();	
-	}
+	
 }
 
 
@@ -114,17 +120,13 @@ void DivSales::setRegion(int c)
 
 void DivSales::setName()
 {
-static int i = 0;
-string reg;
-	cout << "\nPlease enter Region name : "; getline(cin, reg);
-	enterReg[i]=reg;
-	i++;
-	
+	cout << "\nPlease enter Region name : "; getline(cin, enterReg);
+
 }
 
-const string DivSales::getName(int i)
+const string DivSales::getName()
 
-{return enterReg[i];};  
+{return enterReg;};  
 //=================================================================================
 /*
 			SETS QUARTER IN REGION
@@ -139,17 +141,17 @@ const string DivSales::getName(int i)
 		multiple instances of regionTotal to form TotalCorpSales
 		
 */
-void DivSales::setRegSales(int c)
+void DivSales::setRegSales()
 {
-	regionTotal=0;
-	for (int i=0; i<4; i++)
-			{
-				cout << "\nPlease enter Quarter " << (i+1) << ": "; cin >> qtr[i];
-				regionTotal+=qtr[i];
-			}
-		
-	totalCorpSales+= regionTotal;
-	cout << "\nRegion "<< getName(c) << " has " << getSale() << " in total sales" <<endl; 
+
+			for (int i=0; i<4; i++)
+				{
+					cout << "\nPlease enter Quarter " << (i+1) << ": "; cin >> qtr[i];
+					regionTotal+=qtr[i];
+				}
+			totalCorpSales+= regionTotal;
+		 
+	cout << "\nRegion "<< getName() << " has " << getSale() << " in total sales" <<endl; 
 	cout << "Overall Total: " << getAllSales() << endl;	
 }
 	
@@ -160,7 +162,6 @@ const int DivSales::getSale()
 	return regionTotal;	
 }
 //=================================================================================
-
 const int DivSales::getAllSales()
 {
 	return totalCorpSales;
@@ -168,43 +169,30 @@ const int DivSales::getAllSales()
 //=================================================================================
 void DivSales::print()
 {
-system("CLS");
-	
-		for(int j =0; j < 4 ; j++)
-			{
-				cout << getName(j) <<endl;
-				for(int d = 0; d < 4; d++)
-					cout << "\tQuarter " << (d+1) <<" "<< qtr[d]<<endl;
-				cout <<"\t\tRegion's Total : "<< getSale() <<endl;
-			}					
-		cout <<"All Region's Sales in total : " << getAllSales() << endl;
-	
+			cout << getName() <<endl;
+				for(int j = 0; j< 4; j++)
+					cout << "\tQuarter " << (j+1) <<" "<< qtr[j]<<endl;
+			cout <<"\t\tRegion's Total : "<< getSale() <<endl;	
 }
-
+/*
 const int search(DivSales Div[], const int & i, const int & j)
 {
-	int h=0, position=0;
+	int h=0;
+	float position=0;
 	cout << "Positions:" << i << ", " << j << endl;
 	while (h!=(i-1))
 	{
 		for (h; h<4; h++)
-		{
-		if (h==(i-1))	
-		{
-		cout <<  Div[h].qtr[(j-1)];
-		position= Div[h].qtr[(j-1)];
-		return position;}
-		
-			else
-			return 0;
-		}
-	}
-	/*switch(i)
-	case 1:
-		
-	case 2:
-	case 3:
-	case 4:*/
-		
-	
+			{
+				if (h==(i-1))	
+					{
+						cout <<  Div[h].qtr[(j-1)];
+						position= Div[h].qtr[(j-1)];
+						return position;
+					}
+				else
+					return 0;
+			}
+	}	
 }
+*/
