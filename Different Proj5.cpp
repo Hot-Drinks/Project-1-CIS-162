@@ -15,6 +15,7 @@
 	multiple search-and-sort methods
 ***********************************************/
 #include <iostream>
+# include <vector>
 #include <iomanip>
 #include <fstream>
 
@@ -31,27 +32,42 @@ typedef struct Student
 	
 }Stud[LIST];
 
+/*			VECTORS
+		These are temporarily holding these values.
+		They will be replaced with appropriate pointers.
+*/		
+typedef vector <float> Searchvalues;
+typedef vector <int> Positionvalues;  
+
 void setdata (Student *);
 //Project 5 functions
 void simpsearch(Student *);
-	//void sort(farray [], farray []);
-//int Bin_Search(const intarray, farray,int, int, int);
+void firstSearch(Student *);
+	void bubbleSort(Student *);
+		void swap(float * x, float * y);
+		void swap(int * x, int * y);
+	int Bin_Search(Student *, float & value);
+void selectionSort(Student *);
 //====================================================================================
 
 int main()
 {
 
-	Stud GradeInfo;
+	Student * GradeInfo;
+	GradeInfo= new Stud;
 	ofstream disp("PR5OUTPUT.txt");
     	{
     	setdata (GradeInfo);
 		simpsearch(GradeInfo);
+		firstSearch(GradeInfo);
+		selectionSort(GradeInfo);
 	}
+	delete[] GradeInfo;
 }
 
 //=====================================================================================		
 
-void setdata(Student * Info)//intarray ID, farray quiz1, farray quiz2, farray quiz3, farray stavg,  ifstream & read)
+void setdata(Student * Info)
 {
 ifstream read("pr5data.txt");
 	if (!read)
@@ -62,7 +78,7 @@ ifstream read("pr5data.txt");
 	int i = 0;
 	cout << fixed << showpoint << setprecision(2);					
 
-	for (int j = 0 ; j < LIST ; j++)
+	for (int j = 0 ; j < LIST ; j++, Info++)
      	{
    			 read >> (*Info).id;
     		 read >> (*Info).q1;
@@ -70,8 +86,8 @@ ifstream read("pr5data.txt");
     		 read >> (*Info).q3;
 			    
     (*Info).avgt = ((*Info).q1 + (*Info).q2 + (*Info).q3)/3.0;
-//	cout <<"ID NUMBER : " << (*Info).id << "    "<<" AVGT: "<<(*Info).avgt<<endl;
-			Info++;
+	cout <<"ID NUMBER : " << (*Info).id << "    "<<" AVGT: "<<(*Info).avgt<<endl;
+
 		}
 read.close();
 }
@@ -101,49 +117,182 @@ void simpsearch(Student * Info)
 				}
 		Info++;
 		}
-	//sort(stavg, stavg);
-	//Pos = Bin_Search(ID, stavg, 85, 0, LIST-1);
-	/*if (Pos = -1)
-	{
-		cout << " Sorry, didn't work";
-	}
-		else
-			cout << "YES";
-	*/
 }
 
 //==============================================================================================
 /*
-void sort(farray & x, farray & y)
+			FIRSTSORT
+	The firstSearch function serves as a hub for the first
+	necessary sort and search function. It will call a
+	function to sort the values in ascending order, and
+	then will call a binary search to search for the
+	position of those values
+*/
+
+void firstSearch(Student * Info)
 {
-float t = x;
+	Positionvalues position;
+	Searchvalues values;
+	int elements=0;
+
+cout << "Current Students At Or Above An 85.00 Average: " << endl;	
+for (int i=0; i< LIST; i++)
+{
+// displays the ids and averages that are greater than or equals to 85.00
+if ((Info+i)->avgt >= 85.00)
+{
+	cout << "ID: " << ((Info+i)->id) << "\t";	// test dialogue to show value position
+	cout << "AVERAGE: " << ((Info+i)->avgt) << endl;
+}
+}
+//call function that sorts the arrays in ascending order based on the averages
+bubbleSort(Info);
+// A for loop to count how many values are going to be searched
+// and store them in a vector 
+for (int i=0; i< LIST; i++)
+{
+// To test if structure is passing	
+//cout << i+1 <<  ": ID: " << ((Info+i)->id) << "\tAVGT: " << ((Info+i)->avgt) << endl;
+if ((Info+i)->avgt >= 85.00)
+{
+	//cout << "IMPORTANT POSITION " << i << ": " << ((Info+i)->avgt) << endl;	// test dialogue to show value position
+	elements++;
+	values.push_back((Info+i)->avgt);
+}
+}
+//	To test if elements are being counted correctly
+/*for (int i=0; i < elements; i++)
+{
+	cout << (values[i]) << " " << endl;
+}
+cout << "Elements: " << elements << endl;*/
+
+// call search function that uses a binary search to return the position if score of >=85 found	
+for (int i=0; i < elements; i++)
+{
+position.push_back(Bin_Search(Info, values[i]));
+cout << "Value: " << values[i] << endl;
+//cout << "Position: " << position[i] << endl;
+cout << "ID: "<< (Info+position[i])->id << "\t AVGT: " << (Info+position[i])->avgt << " \n" << endl;
+}
+}
+
+
+
+/*
+			BUBBLE SORT 
+	This sort function performs a bubble sort to
+	sort the values within the structure in ascending
+	order. It will then search for any score above 85,
+	store the values and how many there are to aid in
+	searching
+*/
+void bubbleSort(Student * Info) //float * average, int * id
+{
+bool swoop;
+do
+{
+for (int i = 0; i < (LIST-1); i++)
+ {
+ swoop=false;	
+ for (int j = 0; j < (LIST-i-1); j++)
+{
+if (((Info+j)->avgt) >= ((Info+(j+1))->avgt))
+{
+swap(((Info+j)->avgt), ((Info+(j+1))->avgt));
+swap(((Info+j)->id), ((Info+(j+1))->id));
+swoop=true;
+}
+}
+}
+} while (swoop);
+}
+/* 
+
+				SWAP FUNCTIONS
+	These are overloaded functions meant to swap whatever values
+	are needing to be swapped in sort functions. There is one
+	to swap inter pointers and one to swap float pointers.
+
+*/
+void swap(float * x, float * y)
+{
+float * t = x;
 x = y;
 y = t;
 }
-*/
+
+void swap(int * x, int * y)
+{
+int * t = x;
+x = y;
+y = t;
+}
+
 //==============================================================================================
 /*
-int Bin_Search(intarray const ID, farray const stavg,int Result_85, int LowerB, int UpperB)
-{
+		BINARY SEARCH FUNCTIONS
+	Bin_Search:
+	The first binary search function will search for a test score
+	(represented as a float value) within a sorted list and return
+	its relative position.
 	
-int middle;
-
-middle = (0 + UpperB)/2;
-cout << "Middle is : " << middle;
-if	(LowerB > UpperB)
-		return -1;
-else	
-	
-	while (LowerB <= UpperB)
-		if (Result_85 == stavg[middle])
-			return middle;
-		else 
-			if (Result_85 < stavg[middle])
-				LowerB = middle-1;
-		else
-			if (Result_85 > stavg[middle])
-				UpperB = middle-1;	
-	
-return 0;				
-}
 */
+
+int Bin_Search(Student * Info, float & value)
+{
+int first = 0, // First array element
+	last = LIST-1, // Last array element
+middle, // Midpoint of search
+position = -1; // Position of search value
+bool found = false; // Flag
+while (!found && first <= last)
+{
+middle = (first + last) / 2; // Calculate midpoint
+if ((Info+middle)->avgt == value) // If value is found at mid
+{
+found = true;
+position = middle;
+}
+else if ((Info+middle)->avgt > value) // If value is in lower half
+last = middle - 1;
+else
+first = middle + 1; // If value is in upper half
+}
+return position;
+}
+
+
+/*
+			SELECTIONSORT
+			
+*/
+ void selectionSort(Student * const Info)
+{
+int passes=0;	
+int startScan, minIndex, minValue;
+for (startScan = 0; startScan < (LIST - 1); startScan++)
+{
+minIndex = startScan;
+minValue = (Info+startScan)->id;
+//cout << "Min Value: " << minValue << endl;
+for(int index = startScan + 1; index < LIST; index++)
+{
+if (((Info+index)->id) < (minValue))
+{
+minValue = (Info+index)->id;
+minIndex = index;
+passes++;
+}
+}
+
+(Info+minIndex)->id = (Info+startScan)->id;
+(Info+startScan)->id = minValue;
+//cout << (Info+startScan)->id << endl;
+}
+for (int i=0; i< LIST; i++)
+{
+	cout << "ID: " << (Info+i)->id << "\t AVGT: " << (Info+i)->avgt << endl;
+}
+cout << "Sorted " << passes <<  " times" << endl;
+}
